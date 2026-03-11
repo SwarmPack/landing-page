@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# SwarmWatch installer (macOS + Linux)
+#
+# Usage:
+#   curl -fsSL https://swarmpack.github.io/install.sh | bash
+#
+# Notes:
+# - This is a thin, stable entrypoint hosted on GitHub Pages.
+# - It installs from the GitHub "latest release" assets.
+
+REPO="SwarmPack/SwarmWatch"
+BASE="https://github.com/${REPO}/releases/latest/download"
+
+OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+ARCH="$(uname -m)"
+
+die() {
+  printf "\033[31m✗ %s\033[0m\n" "$*" 1>&2
+  exit 1
+}
+
+info() {
+  printf "\033[36m➜ %s\033[0m\n" "$*"
+}
+
+ok() {
+  printf "\033[32m✓ %s\033[0m\n" "$*"
+}
+
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"
+}
+
+need_cmd curl
+need_cmd chmod
+
+# tar is only needed for macOS app archive.
+if [[ "$OS" == "darwin" ]]; then
+  need_cmd tar
+fi
+
+info "SwarmWatch installer"
+
+tmpdir="$(mktemp -d)"
+cleanup() { rm -rf "$tmpdir"; }
+trap cleanup EXIT
+
+asset=""
+
+case "$OS" in
+  darwin)
+    case "$ARCH" in
+      arm64) asset="swarmwatch-macos-arm64.app.tar.gz" ;;
+      x86_64) asset="swarmwatch-macos-x64.app.tar.gz" ;;
+      *) die "unsupported mac arch: $ARCH" ;;
+    esac
+    ;;
+  linux)
+    case "$ARCH" in
+      x86_64|amd64) asset="swarmwatch-linux-x64.AppImage" ;;
+      *) die "unsupported linux arch: $ARCH (only x64 supported in CI right now)" ;;
+    esac
+    ;;
+  *)
+    die "unsupported OS: $OS (use the Windows installer for Windows)"
+    ;;
+esac
+
+url="${BASE}/${asset}"
+info "Downloading latest release…"
+curl -fL "$url" -o "$tmpdir/$asset"
+
+if [[ "$OS" == "darwin" ]]; then
+  info "Extracting…"
+  tar -xzf "$tmpdir/$asset" -C "$tmpdir"
+
+  # Expect SwarmWatch.app in the tarball.
+  app_path="$(find "$tmpdir" -maxdepth 3 -name 'SwarmWatch.app' -print -quit)"
+  [[ -n "$app_path" ]] || die "SwarmWatch.app not found in archive"
+
+  info "Installing to /Applications…"
+  rm -rf "/Applications/SwarmWatch.app" || true
+  cp -R "$app_path" "/Applications/SwarmWatch.app"
+
+  # macOS: clear quarantine attribute so first launch works smoothly.
+  if command -v xattr >/dev/null 2>&1; then
+    xattr -dr com.apple.quarantine "/Applications/SwarmWatch.app" || true
+  fi
+
+  ok "Installed. Open SwarmWatch from /Applications."
+else
+  # Linux: artifact is a raw AppImage (no extraction).
+  appimage="$tmpdir/$asset"
+  [[ -f "$appimage" ]] || die "AppImage not found: $appimage"
+
+  install_dir="${XDG_DATA_HOME:-$HOME/.local/share}/SwarmWatch"
+  mkdir -p "$install_dir"
+  cp "$appimage" "$install_dir/SwarmWatch.AppImage"
+  chmod +x "$install_dir/SwarmWatch.AppImage"
+
+  ok "Installed: $install_dir/SwarmWatch.AppImage"
+  info "Run it with: $install_dir/SwarmWatch.AppImage"
+fi
