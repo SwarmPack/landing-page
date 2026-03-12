@@ -446,8 +446,7 @@
         @media (max-width: 600px) {
             .badge-row { top: 10px; right: 10px; }
             .subtitle { padding: 0 8px; font-size: 1.05rem; }
-            .curl-field { max-width: 100%; flex-wrap: wrap; }
-            .curl-command { white-space: normal; overflow-wrap: anywhere; min-width: 0; }
+            /* No long command displayed anymore; keep row wrapping nicely. */
             .popover-window { position: relative; bottom: auto; right: auto; margin-top: -10px; width: 90%; }
             h1 { font-size: 2.2rem; }
             .producthunt-badge img { max-width: 150px; }
@@ -481,17 +480,13 @@
                     <option value="linux">Linux</option>
                     <option value="windows">Windows</option>
                 </select>
-                <div class="curl-field" id="curl-field">
-                    <span class="curl-prefix" id="curl-prefix">$</span>
-                    <span class="curl-command" id="curl-command">curl -fsSL https://swarmpack.github.io/install.sh | bash</span>
-                </div>
                 <button class="copy-button" type="button" id="copy-btn">
                     <span class="copy-icon" aria-hidden="true">
                       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8 3h9l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 2v14h11V8h-4V5H8zm-4 3h2v12H6a2 2 0 0 1-2-2V6z"/>
                       </svg>
                     </span>
-                    <span class="copy-label">Copy</span>
+                    <span class="copy-label">Copy curl</span>
                 </button>
             </div>
             <button class="demo-button" type="button" id="demo-btn">▶ Watch Demo</button>
@@ -686,37 +681,47 @@ commit? (y/N)
 
 <script>
 const btn = document.getElementById('copy-btn');
-const curlField = document.getElementById('curl-command');
 const platformSelect = document.getElementById('platform-select');
-const prefix = document.getElementById('curl-prefix');
+
+// NOTE: Your GitHub Pages is currently hosted under /landing-page.
+// Root /install.sh will 404 until you change your Pages hosting (org pages repo).
 const curlSnippets = {
-  mac: 'curl -fsSL https://swarmpack.github.io/install.sh | bash',
-  linux: 'curl -fsSL https://swarmpack.github.io/install.sh | bash',
-  windows: 'iwr "https://swarmpack.github.io/install.ps1" -UseBasicParsing | iex'
+  mac: 'curl -fsSL https://swarmpack.github.io/landing-page/install.sh | bash',
+  linux: 'curl -fsSL https://swarmpack.github.io/landing-page/install.sh | bash',
+  windows: 'iwr -useb https://swarmpack.github.io/landing-page/install.ps1 | iex'
 };
-platformSelect.addEventListener('change', () => {
-  const val = platformSelect.value;
-  curlField.textContent = curlSnippets[val];
-  prefix.textContent = val === 'windows' ? 'PS>' : '$';
-});
-btn.addEventListener('click', () => {
-  const text = curlField.textContent.trim();
-  const label = btn.querySelector('.copy-label');
-  const original = label.textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    label.textContent = '✓ Copied';
-    setTimeout(() => { label.textContent = original; }, 1500);
+
+function getSelectedCommand() {
+  if (!platformSelect) return curlSnippets.mac;
+  return curlSnippets[platformSelect.value] || curlSnippets.mac;
+}
+
+// Copy selected command (we don't render the long command in the UI)
+if (btn) {
+  btn.addEventListener('click', () => {
+    const text = getSelectedCommand().trim();
+    const label = btn.querySelector('.copy-label');
+    const original = label ? label.textContent : '';
+    navigator.clipboard.writeText(text).then(() => {
+      if (!label) return;
+      label.textContent = '✓ Copied';
+      setTimeout(() => { label.textContent = original; }, 1500);
+    });
   });
-});
+}
+
+// Stars
 fetch('https://api.github.com/repos/SwarmPack/SwarmWatch')
   .then((res) => res.json())
   .then((data) => {
     if (data.stargazers_count) {
-      document.getElementById('stars-count').textContent = data.stargazers_count.toLocaleString('en-US');
+      const starsEl = document.getElementById('stars-count');
+      if (starsEl) starsEl.textContent = data.stargazers_count.toLocaleString('en-US');
     }
   })
   .catch(() => {});
 
+// Slider
 const slider = document.querySelector('.after-slider');
 if (slider) {
   const slides = slider.querySelectorAll('.after-slide');
@@ -724,23 +729,26 @@ if (slider) {
   const next = slider.querySelector('.slider-btn.next');
   let idx = 0;
   const update = () => slides.forEach((slide, i) => slide.classList.toggle('active', i === idx));
-  prev.addEventListener('click', () => { idx = (idx - 1 + slides.length) % slides.length; update(); });
-  next.addEventListener('click', () => { idx = (idx + 1) % slides.length; update(); });
+  if (prev) prev.addEventListener('click', () => { idx = (idx - 1 + slides.length) % slides.length; update(); });
+  if (next) next.addEventListener('click', () => { idx = (idx + 1) % slides.length; update(); });
   update();
 }
 
+// Demo modal
 const demoBtn = document.getElementById('demo-btn');
 const demoModal = document.getElementById('demo-modal');
 const demoClose = document.getElementById('demo-close');
 const openDemo = () => {
+  if (!demoModal) return;
   demoModal.classList.add('open');
   demoModal.setAttribute('aria-hidden', 'false');
 };
 const closeDemo = () => {
+  if (!demoModal) return;
   demoModal.classList.remove('open');
   demoModal.setAttribute('aria-hidden', 'true');
 };
-if (demoBtn) {
+if (demoBtn && demoModal && demoClose) {
   demoBtn.addEventListener('click', openDemo);
   demoClose.addEventListener('click', closeDemo);
   demoModal.addEventListener('click', (evt) => {
@@ -751,5 +759,6 @@ if (demoBtn) {
   });
 }
 </script>
+
 </body>
 </html>
