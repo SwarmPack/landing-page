@@ -206,7 +206,7 @@
             position: relative;
             box-shadow: 0 25px 60px rgba(0,0,0,0.6);
         }
-        .demo-modal video {
+        .demo-modal iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -323,6 +323,7 @@
             padding: 12px;
             color: #f5f2d0;
         }
+        .log-warning { color: #facc15; }
 
         .after-placeholder {
             border-style: dashed;
@@ -583,11 +584,11 @@ commit? (y/N)
           <div class="log-stack">
             <pre>claude.log  — trimmed head/tail
 [done] api/index.ts
-(no audit trail found)
+<span class="log-warning">(no audit trail found)</span>
             </pre>
             <pre>cursor-cli.log
 [19:12] tests run: 4
-(no recap available)
+<span class="log-warning">(no recap available)</span>
             </pre>
           </div>
         </div>
@@ -677,10 +678,7 @@ commit? (y/N)
     <div class="demo-modal" id="demo-modal" aria-hidden="true">
       <div class="demo-modal__content" role="dialog" aria-label="SwarmWatch demo video">
         <button class="demo-close" type="button" id="demo-close" aria-label="Close demo">×</button>
-        <video id="demo-video" controls preload="none" playsinline poster="assets/after-swarmwatch.gif">
-          <source src="assets/swarmwatch-demo.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <iframe src="https://www.youtube-nocookie.com/embed/BTbIjOn0AyI" title="SwarmWatch" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -734,18 +732,13 @@ if (slider) {
 const demoBtn = document.getElementById('demo-btn');
 const demoModal = document.getElementById('demo-modal');
 const demoClose = document.getElementById('demo-close');
-const demoVideo = document.getElementById('demo-video');
 const openDemo = () => {
   demoModal.classList.add('open');
   demoModal.setAttribute('aria-hidden', 'false');
-  demoVideo.currentTime = 0;
-  demoVideo.play();
 };
 const closeDemo = () => {
   demoModal.classList.remove('open');
   demoModal.setAttribute('aria-hidden', 'true');
-  demoVideo.pause();
-  demoVideo.currentTime = 0;
 };
 if (demoBtn) {
   demoBtn.addEventListener('click', openDemo);
