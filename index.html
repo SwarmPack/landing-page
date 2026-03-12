@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SwarmWatch</title>
 
-    <!--
-      Performance notes:
-      - Preload the hero image so it appears reliably even under high traffic / slow networks.
-      - Add cache-busting via querystring (bump ?v= when you replace the file).
-    -->
     <link rel="preload" as="image" href="assets/swarmwatch-idle.png?v=1" imagesrcset="assets/swarmwatch-idle.png?v=1" />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-    <!-- Optional: avoids favicon 404 noise. Replace with your own if desired. -->
-    <link rel="icon" href="data:,">
     <style>
         :root {
             --bg-color: #000000;
@@ -24,49 +21,39 @@
             --accent-green: #2ea043;
             --accent-blue: #58a6ff;
             --accent-orange: #f0883e;
-            --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            --font-heading: 'Space Grotesk', 'Sora', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-body: 'Sora', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
         }
 
-        /* Global link styles */
-        a {
-            color: var(--accent-blue);
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-
+        * { box-sizing: border-box; }
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
-            font-family: var(--font-mono);
+            font-family: var(--font-body);
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             line-height: 1.6;
-            /* Prevent accidental horizontal scroll on small screens */
             overflow-x: hidden;
         }
+        a { color: var(--accent-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
         .container {
             max-width: 800px;
             width: 100%;
             position: relative;
-            padding: 40px 20px 30px 20px;
+            padding: 40px 20px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 28px;
         }
+        header { text-align: center; margin-bottom: 4px; }
 
-        header {
-            text-align: center;
-            margin-bottom: 4px;
-        }
-
-        /* Badge row */
         .badge-row {
             position: fixed;
             top: 16px;
@@ -76,8 +63,6 @@
             flex-wrap: wrap;
             gap: 8px;
             justify-content: flex-end;
-            margin-bottom: 0;
-            padding-bottom: 0;
         }
         .badge {
             font-size: 0.75rem;
@@ -89,21 +74,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            text-decoration: none;
         }
-        .badge-icon {
-            display: inline-flex;
-            width: 14px;
-            height: 14px;
-            color: var(--text-primary);
-        }
-        .badge-icon svg {
-            width: 100%;
-            height: 100%;
-            fill: currentColor;
-            display: block;
-        }
-        .badge-label { color: var(--text-primary); }
+        .badge-icon { width: 14px; height: 14px; color: var(--text-primary); }
+        .badge-icon svg { width: 100%; height: 100%; fill: currentColor; }
         .badge-value {
             padding: 1px 6px;
             border-radius: 999px;
@@ -113,103 +86,20 @@
             text-align: center;
         }
 
-        /* Product Hunt badge */
-        .producthunt-badge-wrapper {
-            text-align: center;
-            margin-top: 10px;
-        }
-        .producthunt-badge {
-            display: inline-flex;
-            align-items: center;
-        }
-        .producthunt-badge img {
-            height: auto;
-            max-width: 200px;
-        }
-
-        /* Cat head above title */
-        .cat-head-wrapper {
-            margin-bottom: 10px;
-        }
-        .cat-head-img {
-            width: 200px;
-            height: auto;
-        }
-
+        .cat-head-wrapper { margin-bottom: 10px; }
+        .cat-head-img { width: 200px; height: auto; }
         h1 {
             font-size: 3rem;
-            margin: 0 0 10px 0;
-            color: #ffffff;
+            margin: 0 0 10px;
+            color: #fff;
             letter-spacing: -1px;
+            font-family: var(--font-heading);
+            font-weight: 600;
         }
+        h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; }
+        .subtitle { font-size: 1.2rem; color: var(--text-primary); margin-bottom: 5%; }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 5%;
-        }
-
-        /* CTA: button + curl row */
-        .cta-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        /* Row that contains button (label positioned absolutely) */
-        .step1-row {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 1.2em; /* ensure space for label */
-        }
-
-        /* Step 1 label: absolutely positioned to left of button */
-        .step1-label {
-            position: absolute;
-            right: 100%;
-            margin-right: 8px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-        }
-
-        .step-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .step3-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-bottom: 4px;
-        }
-
-        .primary-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 16px;
-            border-radius: 999px;
-            border: 1px solid var(--accent-blue);
-            background: linear-gradient(135deg, #1f2933, #111827);
-            color: #ffffff;
-            font-size: 0.9rem;
-            text-decoration: none;
-            cursor: pointer;
-            gap: 8px;
-        }
-        .primary-button:hover {
-            background: linear-gradient(135deg, #243447, #111827);
-        }
-        .primary-button span.icon { font-size: 1.1rem; }
-
-
-
+        .cta-stack { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 12px; }
         .curl-row {
             display: flex;
             align-items: center;
@@ -218,312 +108,357 @@
             justify-content: center;
             margin-bottom: 4%;
         }
-
-        /* Compact platform selector (matches the curl/copy pill aesthetic) */
         .platform-select {
-            border-radius: 6px; /* match curl field */
+            border-radius: 6px;
             border: 1px solid var(--border-color);
             background: #010409;
             color: var(--text-primary);
             font-family: var(--font-mono);
             font-size: 0.85rem;
-            padding: 6px 10px; /* match curl-field padding */
+            padding: 6px 10px;
             cursor: pointer;
-            outline: none;
             appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            line-height: 1.2;
         }
-        .platform-select:hover {
-            background: #0b1220;
-        }
+        .platform-select:hover { background: #0b1220; }
         .platform-select:focus {
             border-color: var(--accent-blue);
             box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
         }
-
-        .curl-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
         .curl-field {
             display: inline-flex;
             align-items: center;
             width: fit-content;
-            max-width: 100%;
             background: #010409;
             border-radius: 6px;
             border: 1px solid var(--border-color);
             padding: 6px 10px;
             font-size: 0.85rem;
             color: var(--text-primary);
+            font-family: var(--font-mono);
             box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
-            margin-bottom: 5px;;
         }
-
-        .curl-prefix {
-            color: var(--accent-green);
-            margin-right: 6px;
-        }
-
-        .curl-command {
-            white-space: nowrap;
-            user-select: all;
-        }
+        .curl-prefix { color: var(--accent-green); margin-right: 6px; }
+        .curl-command { white-space: nowrap; user-select: all; }
 
         .copy-button {
-            padding: 6px 10px;
-            font-size: 0.78rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: #111827;
-            color: var(--text-primary);
+            padding: 8px 18px;
+            font-size: 0.82rem;
+            border-radius: 999px;
+            border: 1px solid #ffffff;
+            background: #ffffff;
+            color: #000000;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .copy-button:hover {
-            background: #1f2937;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.12);
+        }
+        .copy-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+        }
+        .copy-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+        .copy-label { font-weight: 500; }
+        .demo-button {
+            margin-top: 10px;
+            padding: 10px 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(3,5,12,0.85);
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .demo-button:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-1px);
+        }
+        .demo-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.75);
+            z-index: 200;
+            padding: 20px;
+        }
+        .demo-modal.open { display: flex; }
+        .demo-modal__content {
+            background: #010409;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            max-width: 720px;
+            width: 100%;
+            aspect-ratio: 16/9;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        }
+        .demo-modal video {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 18px;
+            background: #000;
+        }
+        .demo-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            border: none;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .demo-close:hover { background: rgba(0,0,0,0.85); }
+
+        .before-after {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+            margin: 30px 0 20px;
+        }
+        .before-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            align-items: stretch;
+        }
+        .before-card,
+        .after-placeholder {
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+            background: #070b1c;
+            height: 100%;
+        }
+        .before-heading {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0 0 12px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .before-copy { margin: 0 0 14px; color: var(--text-secondary); font-size: 0.95rem; }
+
+        .session-mess {
+            position: relative;
+            min-height: 360px;
+            padding: 20px 0 20px;
+            overflow: hidden;
+        }
+        .session-window {
+            position: absolute;
+            width: 70%;
+            max-width: 320px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            background: #020409;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+            padding: 12px 14px;
+            backdrop-filter: blur(6px);
+        }
+        .session-window:nth-child(1) { top: 0; left: 2%; width: 65%; }
+        .session-window:nth-child(2) { top: 20px; right: 0; width: 60%; }
+        .session-window:nth-child(3) { top: 90px; left: 12%; width: 58%; }
+        .session-window:nth-child(4) { top: 120px; right: 6%; width: 56%; }
+        .session-window:nth-child(5) { top: 170px; left: 28%; width: 54%; }
+        .session-window:nth-child(6) { top: 220px; right: 10%; width: 60%; }
+        .window-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 8px;
+            font-family: var(--font-mono);
+        }
+        .window-chip img { width: 20px; height: 20px; border-radius: 4px; object-fit: cover; }
+        .session-window pre {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: #f5f2d0;
+            white-space: pre-wrap;
+            line-height: 1.35;
         }
 
-        /* Avatar strip */
-        .avatar-tagline {
-            margin-top: 6px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            text-align: center;
+        .agent-claude { background: linear-gradient(135deg, rgba(18,12,35,0.95), rgba(54,33,102,0.85)); border-color: rgba(178,141,255,0.5); }
+        .agent-cursor { background: linear-gradient(135deg, rgba(2,20,27,0.95), rgba(11,52,66,0.85)); border-color: rgba(74,209,255,0.5); }
+        .agent-cline { background: linear-gradient(135deg, rgba(31,18,3,0.95), rgba(69,37,4,0.85)); border-color: rgba(255,179,71,0.5); }
+        .agent-copilot { background: linear-gradient(135deg, rgba(4,22,15,0.95), rgba(9,40,27,0.85)); border-color: rgba(137,255,210,0.5); }
+        .agent-vscode { background: linear-gradient(135deg, rgba(3,22,39,0.95), rgba(6,38,68,0.85)); border-color: rgba(77,165,255,0.5); }
+        .agent-terminal { background: linear-gradient(135deg, rgba(15,15,15,0.95), rgba(5,5,5,0.85)); border-color: rgba(209,213,219,0.4); }
+
+        .log-stack { display: flex; flex-direction: column; gap: 10px; }
+        .log-stack pre {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            background: #04050c;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px;
+            color: #f5f2d0;
         }
+
+        .after-placeholder {
+            border-style: dashed;
+            background: #03050c;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: flex-start;
+            align-items: flex-start;
+            color: var(--text-secondary);
+        }
+        .after-placeholder span {
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .after-placeholder p { margin: 0; }
+        .after-media img {
+            width: 100%;
+            height: auto;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.45);
+            margin-top: 6px;
+        }
+        .after-slider {
+            position: relative;
+            width: 100%;
+            margin-top: 12px;
+            padding: 20px 56px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: #03050c;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+        }
+        .after-slide { display: none; }
+        .after-slide.active { display: block; }
+        .after-slide img { width: 100%; height: auto; border-radius: 12px; display: block; }
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.45);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .slider-btn:hover { background: rgba(0,0,0,0.65); }
+        .slider-btn.prev { left: 12px; }
+        .slider-btn.next { right: 12px; }
+
+        .avatar-band { width: 100%; text-align: center; margin: 30px 0 10px; }
         .avatar-strip {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px; /* 1.5x spacing */
+            gap: 15px;
             flex-wrap: wrap;
             margin-top: 6px;
         }
-        .avatar {
-            /* Increase circle radius by 1.5x (diameter scales 1.5x as well) */
-            width: 51px;
-            height: 51px;
-            border-radius: 999px;
-            border: 1px solid var(--border-color);
-            background: #0b1220;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            /* Same floating animation as the blue rectangle/popover */
-            animation: float 4s ease-in-out infinite;
-            will-change: transform;
-        }
-
-        /* Small phase offsets so the avatars don't all float in sync */
+        .avatar { width: 51px; height: 51px; border-radius: 999px; border: 1px solid var(--border-color); background: #0b1220; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; animation: float 4s ease-in-out infinite; }
         .avatar-strip .avatar:nth-child(1) { animation-delay: 0s; }
         .avatar-strip .avatar:nth-child(2) { animation-delay: 0.3s; }
         .avatar-strip .avatar:nth-child(3) { animation-delay: 0.6s; }
         .avatar-strip .avatar:nth-child(4) { animation-delay: 0.9s; }
         .avatar-strip .avatar:nth-child(5) { animation-delay: 1.2s; }
         .avatar-strip .avatar:nth-child(6) { animation-delay: 1.5s; }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Slight zoom-out for the 'thinks.png' avatar so it matches the visual scale of the SVGs */
-        .avatar img.avatar-thinks {
-            object-fit: contain;
-            transform: scale(0.9091); /* zoom out by 1.1x */
-            transform-origin: center;
-        }
-
-        /* Hero section */
-        .hero-section {
-            position: relative;
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-        .terminal-window {
-            width: 100%;
-            background: #010409;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            overflow: hidden;
-            font-size: 0.9rem;
-            text-align: left;
-            z-index: 1;
-        }
-        .window-header {
-            background: #161b22;
-            padding: 8px 12px;
-            display: flex;
-            gap: 6px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .red { background: #ff5f56; }
-        .yellow { background: #ffbd2e; }
-        .green { background: #27c93f; }
-
-        .terminal-body {
-            padding: 15px;
-            color: var(--text-primary);
-        }
-        .prompt { color: var(--accent-green); }
-        .branch { color: var(--accent-blue); }
-        .output { color: var(--text-secondary); }
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background: var(--text-secondary);
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-        @keyframes blink { 0%,100% {opacity:1;} 50% {opacity:0;} }
-
-        .popover-window {
-            position: absolute;
-            bottom: -30px;
-            right: -20px;
-            background: #1f2428;
-            border: 1px solid var(--accent-blue);
-            border-radius: 6px;
-            padding: 15px;
-            width: 320px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-            z-index: 2;
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-        .popover-content {
-            font-size: 0.95rem;
-            color: #ffffff;
-            border-left: 3px solid var(--accent-blue);
-            padding-left: 10px;
-        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .avatar img.avatar-thinks { object-fit: contain; transform: scale(0.9091); }
 
         .features-container {
             width: 100%;
-            text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
         .feature-title {
             font-size: 1.5rem;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
             display: inline-block;
-            padding-bottom: 5px;
+            padding-bottom: 4px;
         }
-        .feature-grid {
+        .feature-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-            text-align: left;
+            gap: 12px;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
         }
-        .feature-box {
-            background: transparent;
+        @media (min-width: 760px) {
+            .feature-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        }
+        .feature-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: start;
+            padding: 14px 18px;
             border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 6px;
-            transition: border-color 0.2s;
+            border-radius: 10px;
+            background: rgba(17, 24, 39, 0.55);
         }
-        .feature-box:hover { border-color: var(--text-secondary); }
-        .feature-box h3 {
-            margin: 0 0 6px 0;
-            font-size: 1rem;
-            color: #ffffff;
-        }
-        .feature-box p {
-            margin: 0;
-            font-size: 0.86rem;
-            color: var(--text-secondary);
-        }
+        .feature-index { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--accent-blue); }
+        .feature-row h3 { margin: 0 0 4px; font-size: 1.05rem; color: #fff; }
+        .feature-row p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
 
-        /* Sleeping cat near footer */
-        .footer-cat-wrapper {
-            margin-top: -20px;
-            margin-bottom: 2px;
-        }
-        .cat-sleeping-img {
-            width: 110px;
-            height: auto;
-            opacity: 0.9;
-        }
-
-        footer {
-            margin-top: -24px;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            text-align: center;
-        }
+        .footer-cat-wrapper { margin-top: -20px; margin-bottom: 2px; }
+        .cat-sleeping-img { width: 110px; height: auto; opacity: 0.9; }
+        footer { margin-top: -24px; color: var(--text-secondary); font-size: 0.8rem; text-align: center; }
 
         @media (max-width: 600px) {
-            .badge-row {
-                top: 10px;
-                right: 10px;
-            }
-
-            /* Mobile layout: avoid horizontal overflow (e.g. long install command) */
-            .subtitle {
-                padding: 0 8px;
-                font-size: 1.05rem;
-            }
-
-            .curl-field {
-                max-width: 100%;
-                flex-wrap: wrap;
-            }
-
-            .curl-command {
-                white-space: normal;
-                overflow-wrap: anywhere;
-                min-width: 0; /* allow wrapping inside flex container */
-            }
-
-            .popover-window {
-                position: relative;
-                bottom: auto;
-                right: auto;
-                margin-top: -10px;
-                width: 90%;
-            }
+            .badge-row { top: 10px; right: 10px; }
+            .subtitle { padding: 0 8px; font-size: 1.05rem; }
+            .curl-field { max-width: 100%; flex-wrap: wrap; }
+            .curl-command { white-space: normal; overflow-wrap: anywhere; min-width: 0; }
+            .popover-window { position: relative; bottom: auto; right: auto; margin-top: -10px; width: 90%; }
             h1 { font-size: 2.2rem; }
-            .producthunt-badge img {
-                max-width: 150px;
-            }
+            .producthunt-badge img { max-width: 150px; }
         }
     </style>
 </head>
 <body>
-
 <div class="container">
 
     <header>
-        <!-- Header mascot (local asset) -->
         <div class="cat-head-wrapper">
-            <img
-              src="assets/swarmwatch-idle.png?v=1"
-              alt="Product mascot"
-              class="cat-head-img"
-              width="200"
-              height="113"
-              decoding="async"
-              fetchpriority="high"
-            />
+            <img src="assets/swarmwatch-idle.png?v=1" alt="Product mascot" class="cat-head-img" width="200" height="113" decoding="async" fetchpriority="high" />
         </div>
 
         <h1>SwarmWatch</h1>
@@ -532,20 +467,14 @@
         <div class="badge-row">
             <a class="badge" href="https://github.com/SwarmPack/SwarmWatch" aria-label="GitHub stars" title="GitHub stars">
                 <span class="badge-icon" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
-                    </svg>
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
                 </span>
                 <span class="badge-value" id="stars-count">0</span>⭐
             </a>
-  
         </div>
 
-        <!-- CTA stack -->
         <div class="cta-stack">
-
             <div class="curl-row">
-                <!-- <span class="curl-label">Install in Terminal:</span> -->
                 <select class="platform-select" id="platform-select" aria-label="Select platform">
                     <option value="mac">macOS</option>
                     <option value="linux">Linux</option>
@@ -556,241 +485,278 @@
                     <span class="curl-command" id="curl-command">curl -fsSL https://swarmpack.github.io/install.sh | bash</span>
                 </div>
                 <button class="copy-button" type="button" id="copy-btn">
-                    📋 Copy
+                    <span class="copy-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 3h9l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 2v14h11V8h-4V5H8zm-4 3h2v12H6a2 2 0 0 1-2-2V6z"/>
+                      </svg>
+                    </span>
+                    <span class="copy-label">Copy</span>
                 </button>
             </div>
-
-      
-            <div class="avatar-strip" aria-label="Agent avatars">
-                <span class="avatar"><img src="assets/Idle.svg?v=2" alt="Agent avatar 1" loading="lazy" decoding="async" /></span>
-                <span class="avatar"><img src="assets/thinks.png?v=3" alt="Agent avatar 2" class="avatar-thinks" loading="lazy" decoding="async" /></span>
-                <span class="avatar"><img src="assets/Read.svg?v=4" alt="Agent avatar 3" loading="lazy" decoding="async" /></span>
-                <span class="avatar"><img src="assets/Run.svg?v=5" alt="Agent avatar 4" loading="lazy" decoding="async" /></span>
-                <span class="avatar"><img src="assets/Edit.svg?v=6" alt="Agent avatar 5" loading="lazy" decoding="async" /></span>
-                <span class="avatar"><img src="assets/Stuck.svg?v=7" alt="Agent avatar 6" loading="lazy" decoding="async" /></span>
-            </div>
-
-            <div class="avatar-tagline">Your desktop pet that brings your agents to life.</div>
-
-            <!-- Product Hunt badge placed just below Install in Terminal -->
-            <!-- <div class="producthunt-badge-wrapper">
-                <a href="https://www.producthunt.com/products/diffsense?embed=true&utm_source=badge-top-post-badge&utm_medium=badge&utm_campaign=badge-diffsense" target="_blank" rel="noopener noreferrer"><img alt="DiffSense - Local AI git commit generator for Apple Silicon | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1053209&theme=light&period=daily&t=1766739969848"></a>
-            </div> -->
+            <button class="demo-button" type="button" id="demo-btn">▶ Watch Demo</button>
         </div>
     </header>
 
+    <section class="before-after">
+      <div class="before-row">
+        <div class="before-card">
+          <p class="before-heading">Multiple agents create noise</p>
+          <div class="session-mess" aria-hidden="true">
+            <div class="session-window agent-cursor">
+              <div class="window-chip">
+                <img src="assets/icon-cursor.png" alt="Cursor icon" />
+                <span>Cursor</span>
+              </div>
+              <pre>$ cursor --workspace api
+edited 32 files
+waiting for confirmation (00:52)
+… reran npm test
+              </pre>
+            </div>
+            <div class="session-window agent-claude">
+              <div class="window-chip">
+                <img src="assets/icon-claude.png" alt="Claude icon" />
+                <span>Claude</span>
+              </div>
+              <pre>claude dev --status
+Thinking…
+Need approval to rewrite auth.ts
+⚠︎ Prompt timed out
+              </pre>
+            </div>
+            <div class="session-window agent-cline">
+              <div class="window-chip">
+                <img src="assets/icon-cline.png" alt="Cline icon" />
+                <span>Cline</span>
+              </div>
+              <pre>cline mcp tool run format
+MCP → prettier
+MCP → eslint --fix
+requires user consent
+              </pre>
+            </div>
+            <div class="session-window agent-copilot">
+              <div class="window-chip">
+                <img src="assets/icon-copilot.png" alt="Copilot icon" />
+                <span>Copilot</span>
+              </div>
+              <pre>copilot queue
+run jest --watch
+refactor handler.ts
+API token exceeded retry limit
+              </pre>
+            </div>
+            <div class="session-window agent-vscode">
+              <div class="window-chip">
+                <img src="assets/icon-vscode.png" alt="VS Code icon" />
+                <span>VS Code</span>
+              </div>
+              <pre>VS Code tasks
+> build overlay
+> build server
+> yarn dev (already running)
+^C to stop?
+              </pre>
+            </div>
+            <div class="session-window agent-terminal">
+              <div class="window-chip">
+                <img src="assets/icon-terminal.svg" alt="Terminal icon" />
+                <span>Terminal</span>
+              </div>
+              <pre>git status
+modified: src/hooks.ts
+modified: server/run.sh
+commit? (y/N)
+              </pre>
+            </div>
+          </div>
+        </div>
+        <div class="after-placeholder after-media">
+          <p class="before-heading">SwarmWatch cuts it</p>
+          <img src="assets/after-swarmwatch.gif" alt="SwarmWatch overlay animation" loading="lazy" decoding="async" />
+        </div>
+      </div>
 
+      <div class="before-row">
+        <div class="before-card">
+          <p class="before-heading">When agents stop, it all goes dark.</p>
+          <div class="log-stack">
+            <pre>claude.log  — trimmed head/tail
+[done] api/index.ts
+(no audit trail found)
+            </pre>
+            <pre>cursor-cli.log
+[19:12] tests run: 4
+(no recap available)
+            </pre>
+          </div>
+        </div>
+        <div class="after-placeholder after-media">
+          <p class="before-heading">Agent Wrapped and audit trails</p>
+          <div class="after-slider" aria-label="SwarmWatch recap carousel">
+            <button class="slider-btn prev" type="button" aria-label="Previous card">‹</button>
+            <div class="after-slide">
+              <img src="assets/after-card-1.png" alt="SwarmWatch recap summary" loading="lazy" decoding="async" />
+            </div>
+            <div class="after-slide">
+              <img src="assets/after-card-2.png" alt="SwarmWatch audit trail" loading="lazy" decoding="async" />
+            </div>
+            <div class="after-slide">
+              <img src="assets/after-card-3.png" alt="SwarmWatch wrapped highlight" loading="lazy" decoding="async" />
+            </div>
+            <button class="slider-btn next" type="button" aria-label="Next card">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Features -->
-<div class="features-container">
-  <div class="feature-title">Features</div>
-  <div class="feature-grid">
-    <div class="feature-box">
-      <h3>Supports major coding agents</h3>
-      <p>Works with Claude, Cursor, GitHub Copilot, Cline, and other VS Code plugins.</p>
-    </div>
-    <div class="feature-box">
-      <h3>An always-on-top desktop overlay</h3>
-      <p>Follows you wherever you go and keeps agent status updated in real time.</p>
-    </div>
-    <div class="feature-box">
-      <h3>Bidirectional control</h3>
-      <p>Approve or decline your agents’ actions without opening your IDE.</p>
-    </div>
-    <div class="feature-box">
-      <h3>Wrapped-style recap</h3>
-      <p>Get a Spotify Wrapped-style visual recap of everything your agents did, ready to share on socials.</p>
-    </div>
-    <div class="feature-box">
-      <h3>Audit trail</h3>
-      <p>See every step your agents took behind the scenes.</p>
-    </div>
-    <div class="feature-box">
-      <h3>Concurrent agent avatars</h3>
-      <p>Run multiple agent avatars side by side.</p>
-    </div>
-  </div>
-</div>
+    <section class="avatar-band">
+      <div class="avatar-strip" aria-label="Agent avatars">
+        <span class="avatar"><img src="assets/Idle.svg?v=2" alt="Agent avatar 1" loading="lazy" decoding="async" /></span>
+        <span class="avatar"><img src="assets/thinks.png?v=3" alt="Agent avatar 2" class="avatar-thinks" loading="lazy" decoding="async" /></span>
+        <span class="avatar"><img src="assets/Read.svg?v=4" alt="Agent avatar 3" loading="lazy" decoding="async" /></span>
+        <span class="avatar"><img src="assets/Run.svg?v=5" alt="Agent avatar 4" loading="lazy" decoding="async" /></span>
+        <span class="avatar"><img src="assets/Edit.svg?v=6" alt="Agent avatar 5" loading="lazy" decoding="async" /></span>
+        <span class="avatar"><img src="assets/Stuck.svg?v=7" alt="Agent avatar 6" loading="lazy" decoding="async" /></span>
+      </div>
+      <h4>Your desktop pet that brings your agents to life.</h4>
+    </section>
 
-
-
-
+    <div class="features-container">
+      <div class="feature-title">Features</div>
+      <div class="feature-list">
+        <article class="feature-row">
+          <span class="feature-index">01</span>
+          <div>
+            <h3>Supports major coding agents</h3>
+            <p>Works with Claude, Cursor, GitHub Copilot, Cline, and other VS Code plugins.</p>
+          </div>
+        </article>
+        <article class="feature-row">
+          <span class="feature-index">02</span>
+          <div>
+            <h3>An always-on-top desktop overlay</h3>
+            <p>Follows you wherever you go and keeps agent status updated in real time.</p>
+          </div>
+        </article>
+        <article class="feature-row">
+          <span class="feature-index">03</span>
+          <div>
+            <h3>Bidirectional control</h3>
+            <p>Approve or decline your agents’ actions without opening your IDE.</p>
+          </div>
+        </article>
+        <article class="feature-row">
+          <span class="feature-index">04</span>
+          <div>
+            <h3>Wrapped-style recap</h3>
+            <p>Get a Spotify Wrapped-style visual recap of everything your agents did, ready to share on socials.</p>
+          </div>
+        </article>
+        <article class="feature-row">
+          <span class="feature-index">05</span>
+          <div>
+            <h3>Audit trail</h3>
+            <p>See every step your agents took behind the scenes.</p>
+          </div>
+        </article>
+        <article class="feature-row">
+          <span class="feature-index">06</span>
+          <div>
+            <h3>Concurrent agent avatars</h3>
+            <p>Run multiple agent avatars side by side.</p>
+          </div>
+        </article>
+      </div>
+    </div>
 
     <footer>
         2026 © <a href="https://github.com/SwarmPack/SwarmWatch/">SwarmWatch</a>
     </footer>
 
-    
+    <div class="demo-modal" id="demo-modal" aria-hidden="true">
+      <div class="demo-modal__content" role="dialog" aria-label="SwarmWatch demo video">
+        <button class="demo-close" type="button" id="demo-close" aria-label="Close demo">×</button>
+        <video id="demo-video" controls preload="none" playsinline poster="assets/after-swarmwatch.gif">
+          <source src="assets/swarmwatch-demo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
 
 </div>
 
-<!-- Badge + copy scripts -->
 <script>
-// Copy CURL command
-document.getElementById('copy-btn').addEventListener('click', function () {
-    var text = document.getElementById('curl-command').textContent.trim();
-    navigator.clipboard.writeText(text).then(function () {
-        var btn = document.getElementById('copy-btn');
-        var old = btn.textContent;
-        btn.textContent = '✓ Copied';
-        setTimeout(function () { btn.textContent = old; }, 1500);
-    });
+const btn = document.getElementById('copy-btn');
+const curlField = document.getElementById('curl-command');
+const platformSelect = document.getElementById('platform-select');
+const prefix = document.getElementById('curl-prefix');
+const curlSnippets = {
+  mac: 'curl -fsSL https://swarmpack.github.io/install.sh | bash',
+  linux: 'curl -fsSL https://swarmpack.github.io/install.sh | bash',
+  windows: 'iwr "https://swarmpack.github.io/install.ps1" -UseBasicParsing | iex'
+};
+platformSelect.addEventListener('change', () => {
+  const val = platformSelect.value;
+  curlField.textContent = curlSnippets[val];
+  prefix.textContent = val === 'windows' ? 'PS>' : '$';
 });
-
-// Platform-aware install command with manual override dropdown.
-(function installCommandController() {
-  var el = document.getElementById('curl-command');
-  var prefixEl = document.getElementById('curl-prefix');
-  var selectEl = document.getElementById('platform-select');
-  if (!el || !selectEl) return;
-
-  var owner = 'SwarmPack';
-  var repo = 'SwarmWatch';
-  var storageKey = 'swarmwatch:install-platform';
-
-  function detectPlatform() {
-    var platformStr = (navigator.userAgentData && navigator.userAgentData.platform)
-      ? String(navigator.userAgentData.platform)
-      : String(navigator.platform || '') + ' ' + String(navigator.userAgent || '');
-
-    if (/windows/i.test(platformStr)) return 'windows';
-    if (/mac/i.test(platformStr)) return 'mac';
-    // includes Linux desktops; Android often reports Linux too, but user can override.
-    if (/linux/i.test(platformStr)) return 'linux';
-    return 'mac';
-  }
-
-  function setPlatform(p) {
-    // Keep the prompt prefix consistent (no PowerShell-specific prompt text).
-    if (prefixEl) prefixEl.textContent = '$';
-    if (p === 'windows') {
-      el.textContent = 'iwr -useb https://swarmpack.github.io/install.ps1 | iex';
-      return;
-    }
-    el.textContent = 'curl -fsSL https://swarmpack.github.io/install.sh | bash';
-  }
-
-  function readSaved() {
-    try {
-      var v = localStorage.getItem(storageKey);
-      return v === 'windows' || v === 'mac' || v === 'linux' ? v : null;
-    } catch {
-      return null;
-    }
-  }
-
-  function save(p) {
-    try {
-      localStorage.setItem(storageKey, p);
-    } catch {
-      // ignore
-    }
-  }
-
-  // Initialize
-  var initial = readSaved() || detectPlatform();
-  selectEl.value = initial;
-  setPlatform(initial);
-
-  // Respond to manual changes
-  selectEl.addEventListener('change', function () {
-    var p = selectEl.value;
-    setPlatform(p);
-    save(p);
+btn.addEventListener('click', () => {
+  const text = curlField.textContent.trim();
+  const label = btn.querySelector('.copy-label');
+  const original = label.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    label.textContent = '✓ Copied';
+    setTimeout(() => { label.textContent = original; }, 1500);
   });
-})();
-
-// Function to get badge values from shields.io (primary) with GitHub API fallback
-async function getBadgeValue(owner, repo, metric) {
-  // We only display/cache stars now. Keep this guard in case the function is
-  // accidentally called with other metrics.
-  if (metric !== 'stars') return '—';
-
-  const cacheKey = `badge:${owner}/${repo}:${metric}`;
-  const cacheTtlMs = 15 * 60 * 1000; // 15 minutes
-
-  function readCache() {
-    try {
-      const raw = localStorage.getItem(cacheKey);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed?.value || !parsed?.ts) return null;
-      if (Date.now() - parsed.ts > cacheTtlMs) return null;
-      return parsed.value;
-    } catch {
-      return null;
+});
+fetch('https://api.github.com/repos/SwarmPack/SwarmWatch')
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.stargazers_count) {
+      document.getElementById('stars-count').textContent = data.stargazers_count.toLocaleString('en-US');
     }
-  }
+  })
+  .catch(() => {});
 
-  function writeCache(value) {
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify({ value, ts: Date.now() }));
-    } catch {
-      // ignore (private browsing / storage full)
-    }
-  }
-
-  // Try shields.io first
-  try {
-    let url;
-    if (metric === 'stars') {
-      url = `https://img.shields.io/github/stars/${owner}/${repo}.json`;
-    }
-
-    const response = await fetch(url);
-    if (response.ok) {
-      const data = await response.json();
-      const value = data.message; // e.g., "1,234"
-      writeCache(value);
-      return value;
-    }
-  } catch (e) {
-    console.warn(`Shields.io failed for ${metric}, trying GitHub API`);
-  }
-
-  // If shields fails, prefer cached values (prevents "0" under transient failures)
-  const cached = readCache();
-  if (cached) return cached;
-
-  // Fallback to GitHub API
-  try {
-    if (metric === 'stars') {
-      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
-      if (!res.ok) return '—';
-      const data = await res.json();
-      const value = (data.stargazers_count ?? 0).toLocaleString();
-      writeCache(value);
-      return value;
-    }
-  } catch (e) {
-    console.error(`Both shields.io and GitHub API failed for ${metric}:`, e);
-    return cached ?? '—';
-  }
+const slider = document.querySelector('.after-slider');
+if (slider) {
+  const slides = slider.querySelectorAll('.after-slide');
+  const prev = slider.querySelector('.slider-btn.prev');
+  const next = slider.querySelector('.slider-btn.next');
+  let idx = 0;
+  const update = () => slides.forEach((slide, i) => slide.classList.toggle('active', i === idx));
+  prev.addEventListener('click', () => { idx = (idx - 1 + slides.length) % slides.length; update(); });
+  next.addEventListener('click', () => { idx = (idx + 1) % slides.length; update(); });
+  update();
 }
 
-// Load badge values
-(async function() {
-  // Keep these in sync with the badge <a href="..."> links above.
-  // We only render/cache stars now.
-  const owner = 'SwarmPack';
-  const repo = 'SwarmWatch';
-
-  const starsEl = document.getElementById('stars-count');
-
-  // Optional cleanup: remove old cached entries from when we displayed them.
-  try {
-    localStorage.removeItem(`badge:${owner}/${repo}:downloads`);
-    localStorage.removeItem(`badge:${owner}/${repo}:forks`);
-  } catch {
-    // ignore (private browsing / storage full)
-  }
-
-  if (starsEl) {
-    const stars = await getBadgeValue(owner, repo, 'stars');
-    starsEl.textContent = stars;
-  }
-})();
+const demoBtn = document.getElementById('demo-btn');
+const demoModal = document.getElementById('demo-modal');
+const demoClose = document.getElementById('demo-close');
+const demoVideo = document.getElementById('demo-video');
+const openDemo = () => {
+  demoModal.classList.add('open');
+  demoModal.setAttribute('aria-hidden', 'false');
+  demoVideo.currentTime = 0;
+  demoVideo.play();
+};
+const closeDemo = () => {
+  demoModal.classList.remove('open');
+  demoModal.setAttribute('aria-hidden', 'true');
+  demoVideo.pause();
+  demoVideo.currentTime = 0;
+};
+if (demoBtn) {
+  demoBtn.addEventListener('click', openDemo);
+  demoClose.addEventListener('click', closeDemo);
+  demoModal.addEventListener('click', (evt) => {
+    if (evt.target === demoModal) closeDemo();
+  });
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape' && demoModal.classList.contains('open')) closeDemo();
+  });
+}
 </script>
-
 </body>
 </html>
