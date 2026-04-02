@@ -107,7 +107,7 @@
         profile: {
           fullName: "Marisol Vega",
           preferredName: "Mari",
-          email: "mvega@nevada.unr.edu",
+          email: "mvega@unr.edu",
           major: "Biology",
           minor: "Chemistry",
           classYear: "First-year",
@@ -175,7 +175,7 @@
         profile: {
           fullName: "Ethan Park",
           preferredName: null,
-          email: "epark@nevada.unr.edu",
+          email: "epark@unr.edu",
           major: "Computer Science & Engineering",
           minor: null,
           classYear: "Junior",
@@ -243,7 +243,7 @@
         profile: {
           fullName: "Aaliyah Johnson",
           preferredName: null,
-          email: "ajohnson@nevada.unr.edu",
+          email: "ajohnson@unr.edu",
           major: "Psychology",
           minor: "Human Development",
           classYear: "Senior",
@@ -310,7 +310,7 @@
         profile: {
           fullName: "Noah Kim",
           preferredName: null,
-          email: "nkim@nevada.unr.edu",
+          email: "nkim@unr.edu",
           major: "Business Administration",
           minor: "Data Analytics",
           classYear: "Sophomore",
@@ -384,7 +384,7 @@
         profile: {
           fullName: "Sofia Hernandez",
           preferredName: "Sofi",
-          email: "shernandez@nevada.unr.edu",
+          email: "shernandez@unr.edu",
           major: "Mechanical Engineering",
           minor: null,
           classYear: "Senior",
@@ -450,7 +450,7 @@
         profile: {
           fullName: "Jordan Reed",
           preferredName: null,
-          email: "jreed@nevada.unr.edu",
+          email: "jreed@unr.edu",
           major: "Journalism",
           minor: "Political Science",
           classYear: "Sophomore",
@@ -514,7 +514,7 @@
         profile: {
           fullName: "Priya Desai",
           preferredName: null,
-          email: "pdesai@nevada.unr.edu",
+          email: "pdesai@unr.edu",
           major: "Neuroscience",
           minor: null,
           classYear: "Senior",
@@ -580,7 +580,7 @@
         profile: {
           fullName: "Kai Thompson",
           preferredName: null,
-          email: "kthompson@nevada.unr.edu",
+          email: "kthompson@unr.edu",
           major: "Environmental Science",
           minor: "Geography",
           classYear: "Junior",
@@ -646,7 +646,7 @@
         profile: {
           fullName: "Hannah Lee",
           preferredName: null,
-          email: "hlee@nevada.unr.edu",
+          email: "hlee@unr.edu",
           major: "Nursing",
           minor: null,
           classYear: "First-year",
@@ -706,7 +706,7 @@
         profile: {
           fullName: "Caleb Miller",
           preferredName: null,
-          email: "cmiller@nevada.unr.edu",
+          email: "cmiller@unr.edu",
           major: "Mathematics",
           minor: "Computer Science",
           classYear: "Junior",
@@ -769,7 +769,7 @@
         profile: {
           fullName: "Liam O'Connor",
           preferredName: null,
-          email: "loconnor@nevada.unr.edu",
+          email: "loconnor@unr.edu",
           major: "Economics",
           minor: null,
           classYear: "Senior",
@@ -835,7 +835,7 @@
         profile: {
           fullName: "Grace Nguyen",
           preferredName: null,
-          email: "gnguyen@nevada.unr.edu",
+          email: "gnguyen@unr.edu",
           major: "English",
           minor: "Philosophy",
           classYear: "Senior",
@@ -901,7 +901,7 @@
         profile: {
           fullName: "Miguel Santos",
           preferredName: null,
-          email: "msantos@nevada.unr.edu",
+          email: "msantos@unr.edu",
           major: "Public Health",
           minor: null,
           classYear: "Sophomore",
