@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Honors Pulse — UNR Honors College</title>
+    <meta
+      name="description"
+      content="Honors Pulse: an internal UNR Honors advising triage dashboard demo."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" href="data:," />
+
+    <link rel="stylesheet" href="honors-pulse.css" />
+  </head>
+  <body>
+    <div class="hp-app" id="app">
+      <!-- Sidebar -->
+      <aside class="hp-sidebar" aria-label="Primary">
+        <div class="hp-brand">
+          <div class="hp-brand__mark" aria-hidden="true">HP</div>
+          <div class="hp-brand__text">
+            <div class="hp-brand__name">Honors Pulse</div>
+            <a
+              class="hp-brand__sub"
+              href="https://www.unr.edu/honors/about"
+              target="_blank"
+              rel="noreferrer"
+            >
+              UNR Honors College
+            </a>
+          </div>
+        </div>
+
+        <nav class="hp-nav" aria-label="Navigation">
+          <button class="hp-nav__item is-active" data-view="dashboard" type="button">
+            <span class="hp-nav__icon" aria-hidden="true">▦</span>
+            <span class="hp-nav__label">Dashboard</span>
+          </button>
+          <button class="hp-nav__item" data-view="students" type="button">
+            <span class="hp-nav__icon" aria-hidden="true">👥</span>
+            <span class="hp-nav__label">Students</span>
+          </button>
+          <button class="hp-nav__item" data-view="queue" type="button">
+            <span class="hp-nav__icon" aria-hidden="true">⧗</span>
+            <span class="hp-nav__label">Queue</span>
+          </button>
+          <button class="hp-nav__item" data-view="insights" type="button">
+            <span class="hp-nav__icon" aria-hidden="true">▤</span>
+            <span class="hp-nav__label">Insights</span>
+          </button>
+
+          <button class="hp-nav__item is-disabled" data-view="settings" type="button" disabled>
+            <span class="hp-nav__icon" aria-hidden="true">⚙</span>
+            <span class="hp-nav__label">Settings</span>
+          </button>
+        </nav>
+
+        <div class="hp-sidebar__footer">
+          <div class="hp-microcopy">
+            Thin operational layer on top of <strong>Navigate</strong>, <strong>Canvas/WebCampus</strong>,
+            <strong>PeopleSoft/MyNEVADA</strong>, and <strong>DocuSign</strong> — not a replacement.
+          </div>
+          <a class="hp-backlink" href="index.html">← Back to landing page</a>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="hp-main">
+        <!-- Header -->
+        <header class="hp-header" aria-label="Global controls">
+          <div class="hp-header__left">
+            <div class="hp-page-title" id="page-title">Dashboard</div>
+            <div class="hp-last-updated" id="last-updated">Last updated: —</div>
+          </div>
+
+          <div class="hp-header__center">
+            <label class="hp-search" aria-label="Search students">
+              <span class="hp-search__icon" aria-hidden="true">⌕</span>
+              <input
+                id="global-search"
+                type="search"
+                placeholder="Search name, ID, major, advisor, reasons…"
+                autocomplete="off"
+              />
+            </label>
+          </div>
+
+          <div class="hp-header__right">
+            <button class="hp-btn hp-btn--ghost" id="filter-btn" type="button">Filters</button>
+            <label class="hp-toggle" title="Show only Urgent risk tier">
+              <input id="only-urgent" type="checkbox" />
+              <span class="hp-toggle__track" aria-hidden="true"></span>
+              <span class="hp-toggle__label">Only urgent</span>
+            </label>
+
+            <button class="hp-btn" id="export-btn" type="button">Export</button>
+            <button class="hp-btn hp-btn--primary" id="create-task-btn" type="button">
+              Create outreach task
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <main class="hp-content" id="content" tabindex="-1">
+          <!-- Dashboard view -->
+          <section class="hp-view" id="view-dashboard" data-view="dashboard">
+            <div class="hp-kpis" id="kpi-row" aria-label="Key performance indicators"></div>
+
+            <div class="hp-panel">
+              <div class="hp-panel__head">
+                <div class="hp-panel__title">Risk buckets</div>
+                <div class="hp-panel__actions">
+                  <div class="hp-tabs" role="tablist" aria-label="Risk buckets">
+                    <button class="hp-tab" data-bucket="Urgent" type="button" role="tab">Urgent</button>
+                    <button class="hp-tab" data-bucket="High" type="button" role="tab">High</button>
+                    <button class="hp-tab" data-bucket="Watch" type="button" role="tab">Watch</button>
+                    <button class="hp-tab" data-bucket="Stable" type="button" role="tab">Stable</button>
+                  </div>
+                  <button class="hp-btn hp-btn--ghost" id="refresh-btn" type="button">
+                    Refresh demo data
+                  </button>
+                </div>
+              </div>
+
+              <div class="hp-queue" aria-label="Student queue">
+                <div class="hp-queue__meta" id="queue-meta"></div>
+                <div class="hp-student-list" id="student-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Students view -->
+          <section class="hp-view" id="view-students" data-view="students" hidden>
+            <div class="hp-panel">
+              <div class="hp-panel__head">
+                <div class="hp-panel__title">All students</div>
+                <div class="hp-panel__subtitle">
+                  This view uses the same search/filters as the dashboard queue.
+                </div>
+              </div>
+              <div class="hp-student-list" id="all-student-list"></div>
+            </div>
+          </section>
+
+          <!-- Queue view -->
+          <section class="hp-view" id="view-queue" data-view="queue" hidden>
+            <div class="hp-panel">
+              <div class="hp-panel__head">
+                <div class="hp-panel__title">Operational queues</div>
+                <div class="hp-panel__subtitle">
+                  Track follow-up status. This is a demo workflow layer; it does not replace Navigate scheduling.
+                </div>
+              </div>
+              <div class="hp-queues" id="queues"></div>
+            </div>
+          </section>
+
+          <!-- Insights view -->
+          <section class="hp-view" id="view-insights" data-view="insights" hidden>
+            <div class="hp-grid-2">
+              <div class="hp-panel">
+                <div class="hp-panel__head">
+                  <div class="hp-panel__title">Students by risk tier</div>
+                  <div class="hp-panel__subtitle">Counts recompute from the mock data + rules engine.</div>
+                </div>
+                <div id="chart-risk" class="hp-chart" aria-label="Bar chart"></div>
+              </div>
+
+              <div class="hp-panel">
+                <div class="hp-panel__head">
+                  <div class="hp-panel__title">Top reason categories</div>
+                  <div class="hp-panel__subtitle">What’s driving the queue right now.</div>
+                </div>
+                <div id="chart-reasons" class="hp-chart" aria-label="Donut chart"></div>
+              </div>
+            </div>
+
+            <div class="hp-panel">
+              <div class="hp-panel__head">
+                <div class="hp-panel__title">Watchlist (unresolved)</div>
+                <div class="hp-panel__subtitle">
+                  Fast triage list: highest risk scores with incomplete milestones or alerts.
+                </div>
+              </div>
+              <div class="hp-student-list" id="insights-list"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- Student drawer -->
+      <div class="hp-drawer-backdrop" id="drawer-backdrop" hidden></div>
+      <aside class="hp-drawer" id="student-drawer" aria-label="Student detail" aria-hidden="true">
+        <div class="hp-drawer__head">
+          <div class="hp-drawer__title" id="drawer-title">Student</div>
+          <button class="hp-icon-btn" id="drawer-close" type="button" aria-label="Close">×</button>
+        </div>
+        <div class="hp-drawer__body" id="drawer-body"></div>
+      </aside>
+
+      <!-- Filters drawer -->
+      <div class="hp-modal-backdrop" id="filters-backdrop" hidden></div>
+      <aside class="hp-filters" id="filters" aria-label="Filters" aria-hidden="true">
+        <div class="hp-filters__head">
+          <div class="hp-filters__title">Filters</div>
+          <button class="hp-icon-btn" id="filters-close" type="button" aria-label="Close">×</button>
+        </div>
+        <div class="hp-filters__body" id="filters-body"></div>
+        <div class="hp-filters__foot">
+          <button class="hp-btn hp-btn--ghost" id="reset-filters" type="button">Reset</button>
+          <button class="hp-btn hp-btn--primary" id="apply-filters" type="button">Apply filters</button>
+        </div>
+      </aside>
+
+      <!-- Outreach modal -->
+      <div class="hp-modal" id="outreach-modal" aria-hidden="true" hidden>
+        <div class="hp-modal__content" role="dialog" aria-label="Draft outreach">
+          <div class="hp-modal__head">
+            <div class="hp-modal__title">Draft outreach</div>
+            <button class="hp-icon-btn" id="outreach-close" type="button" aria-label="Close">×</button>
+          </div>
+          <div class="hp-modal__body" id="outreach-body"></div>
+          <div class="hp-modal__foot">
+            <button class="hp-btn hp-btn--ghost" id="outreach-cancel" type="button">Cancel</button>
+            <button class="hp-btn" id="outreach-save" type="button">Save draft</button>
+            <button class="hp-btn hp-btn--primary" id="outreach-sent" type="button">Mark sent</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="honors-pulse.js"></script>
+  </body>
+</html>

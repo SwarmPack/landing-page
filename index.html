@@ -41,6 +41,10 @@
             --font-heading: 'Space Grotesk', 'Sora', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             --font-body: 'Sora', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            --panel-light: #f5f8ff;
+            --panel-border-light: rgba(15, 23, 42, 0.12);
+            --panel-text-dark: #0b1220;
+            --panel-text-muted: #3d4a5f;
         }
 
         * { box-sizing: border-box; }
@@ -261,17 +265,19 @@
         }
         .before-card,
         .after-placeholder {
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border-light);
             border-radius: 14px;
             padding: 18px;
-            background: #070b1c;
+            background: var(--panel-light);
+            color: var(--panel-text-dark);
             height: 100%;
+            box-shadow: 0 15px 35px rgba(7, 11, 28, 0.2);
         }
         .before-heading {
             font-size: 1rem;
             font-weight: 500;
             margin: 0 0 12px;
-            color: var(--text-primary);
+            color: var(--panel-text-dark);
             font-family: var(--font-mono);
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -334,28 +340,30 @@
             margin: 0;
             font-family: var(--font-mono);
             font-size: 0.75rem;
-            background: #04050c;
+            background: #ffffff;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid var(--panel-border-light);
             padding: 12px;
-            color: #f5f2d0;
+            color: var(--panel-text-dark);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
         }
-        .log-warning { color: #facc15; }
+        .log-warning { color: #b45309; }
 
         .after-placeholder {
             border-style: dashed;
-            background: #03050c;
+            background: var(--panel-light);
             display: flex;
             flex-direction: column;
             gap: 8px;
             justify-content: flex-start;
             align-items: flex-start;
-            color: var(--text-secondary);
+            color: var(--panel-text-muted);
         }
         .after-placeholder span {
             font-size: 0.85rem;
             letter-spacing: 0.12em;
             text-transform: uppercase;
+            color: var(--panel-text-dark);
         }
         .after-placeholder p { margin: 0; }
         .after-media img {
@@ -372,9 +380,9 @@
             margin-top: 12px;
             padding: 20px 56px;
             border-radius: 18px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: #03050c;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+            border: 1px solid var(--panel-border-light);
+            background: #ffffff;
+            box-shadow: 0 25px 60px rgba(12, 23, 42, 0.25);
         }
         .after-slide { display: none; }
         .after-slide.active { display: block; }
@@ -386,15 +394,16 @@
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.45);
-            color: #fff;
+            border: 1px solid rgba(15, 23, 42, 0.15);
+            background: #ffffff;
+            color: var(--panel-text-dark);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
         }
-        .slider-btn:hover { background: rgba(0,0,0,0.65); }
+        .slider-btn:hover { background: #f0f4ff; }
         .slider-btn.prev { left: 12px; }
         .slider-btn.next { right: 12px; }
 
@@ -507,13 +516,16 @@
                 </button>
             </div>
             <button class="demo-button" type="button" id="demo-btn">▶ Watch Demo</button>
+            <a class="demo-button" href="honors-pulse.html" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;">
+              Open Honors Pulse demo
+            </a>
         </div>
     </header>
 
     <section class="before-after">
       <div class="before-row">
         <div class="before-card">
-          <p class="before-heading">Multiple agents create noise</p>
+          <p class="before-heading"><strong>Multiple agents create noise</strong></p>
           <div class="session-mess" aria-hidden="true">
             <div class="session-window agent-cursor">
               <div class="window-chip">
@@ -585,14 +597,14 @@ commit? (y/N)
           </div>
         </div>
         <div class="after-placeholder after-media">
-          <p class="before-heading">SwarmWatch cuts it</p>
+          <p class="before-heading"><strong>SwarmWatch cuts through it</strong></p>
           <img src="assets/after-swarmwatch.gif" alt="SwarmWatch overlay animation" loading="lazy" decoding="async" />
         </div>
       </div>
 
       <div class="before-row">
         <div class="before-card">
-          <p class="before-heading">When agents stop, it all goes dark.</p>
+          <p class="before-heading"><strong>When agents stop, it all goes dark.</strong></p>
           <div class="log-stack">
             <pre>claude.log  — trimmed head/tail
 [done] api/index.ts
@@ -605,7 +617,7 @@ commit? (y/N)
           </div>
         </div>
         <div class="after-placeholder after-media">
-          <p class="before-heading">Agent Wrapped and audit trails</p>
+          <p class="before-heading"><strong>Agent Wrapped and audit trails</strong></p>
           <div class="after-slider" aria-label="SwarmWatch recap carousel">
             <button class="slider-btn prev" type="button" aria-label="Previous card">‹</button>
             <div class="after-slide">
